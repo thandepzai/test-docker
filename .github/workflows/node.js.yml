@@ -19,9 +19,13 @@ jobs:
         node-version: [20.10]
 
     steps:
-      - name: Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
 
-      - name: Set up nodejs
+    - name: Set up nodejs
       uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+
+    - name: Build and push Docker image
       
