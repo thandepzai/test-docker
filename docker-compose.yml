@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+    test-docker-1:
+        # build:
+        #     context: .
+        #     dockerfile: Dockerfile
+        #     args:
+        #         APP_ENV: docker-1
+        image: cuthan2k1/test-deploy-docker
+        container_name: container-docker-1
+        restart: unless-stopped
+        volumes:
+            - ./:/app
+            - /app/node_modules
+            - /app/.next
+            - /app/public
+        ports:
+            - "3040:3040"
+
+    test-docker-2:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                APP_ENV: docker-2
+        image: cuthan2k1/test-deploy-docker
+        container_name: container-docker-2
+        restart: unless-stopped
+        volumes:
+            - ./:/app
+            - /app/node_modules
+            - /app/.next
+            - /app/public
+        ports:
+            - "3042:3042"
+        command: ["pm2-runtime", "ecosystem.config.js", "--env", "docker_2"]
+
+    test-docker-3:
+        # build:
+        #     context: .
+        #     dockerfile: Dockerfile
+        #     args:
+        #         APP_ENV: docker-3
+        image: cuthan2k1/test-deploy-docker
+        container_name: container-docker-3
+        restart: unless-stopped
+        volumes:
+            - ./:/app
+            - /app/node_modules
+            - /app/.next
+            - /app/public
+        ports:
+            - "3043:3043"
+        command: ["pm2-runtime", "ecosystem.config.js", "--env", "docker_3"]
+
+volumes:
+    static-file:
+        driver: local
+
+    static-file-dev:
+        driver: local
