@@ -27,5 +27,38 @@ jobs:
       with:
         node-version: "20"
 
-    - name: Build and push Docker image
-      
+    - name: github tao may ao roi build image cho minh
+      run: |
+        docker build -t ${{secrets.DOCKER_IMAGE_NAME}} .
+        docker tag ${{ secrets.DOCKER_IMAGE_NAME }} ${{secrets.DOCKER_ID}}/${{secrets.DOCKER_IMAGE_NAME}}
+        docker login -u ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_PASSWORD }}
+        docker push ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_IMAGE_NAME }}
+
+    - name: Copy file cua minh o server ra root cua github
+            uses: appleboy/scp-action@v0.1.7
+            with:
+              host: ${{ secrets.SERVER_HOST }}
+              username: ${{ secrets.SERVER_USERNAME }}
+              key: ${{ secrets.SERVER_SSH_KEY }}
+              source: "deploy/*"
+              target: "/root"
+
+    - name: SSH to server and run script de build image
+      uses: appleboy/ssh-action@v1.0.3
+      env:
+        DOCKER_ID: ${{ secrets.DOCKER_ID }}
+        DOCKER_COMPOSE_PATH: "/root/deploy/docker-compose.yml"
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        envs: DOCKER_ID, DOCKER_COMPOSE_PATH
+        script_stop: true
+        script: |
+          echo $DOCKER_COMPOSE_PATH
+          echo $DOCKER_PASSWORD
+          docker login -u ${{ secrets.DOCKER_ID}} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker pull ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_IMAGE_NAME}}
+          docker-compose -f $DOCKER_COMPOSE_PATH down
+          docker-compose -f $DOCKER_COMPOSE_PATH up -d
