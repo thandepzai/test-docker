@@ -34,7 +34,7 @@ jobs:
         docker login -u ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_PASSWORD }}
         docker push ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_IMAGE_NAME }}
 
-    - name: Copy file cua minh o server ra root cua github
+    - name: copy file cua minh o server ra root cua github
             uses: appleboy/scp-action@v0.1.7
             with:
               host: ${{ secrets.SERVER_HOST }}
