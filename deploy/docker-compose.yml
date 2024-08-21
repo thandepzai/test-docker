@@ -19,11 +19,11 @@ services:
             - "3040:3040"
 
     test-docker-2:
-        build:
-            context: .
-            dockerfile: Dockerfile
-            args:
-                APP_ENV: docker-2
+        # build:
+        #     context: .
+        #     dockerfile: Dockerfile
+        #     args:
+        #         APP_ENV: docker-2
         image: cuthan2k1/test-deploy-docker
         container_name: container-docker-2
         restart: unless-stopped
